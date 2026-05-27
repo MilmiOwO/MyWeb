@@ -7,9 +7,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
 </head>
 <body>
-<form method="POST">
-    <input type="password" placeholder="password">
-    <button type="submit">login</button>
-</form>
+    {% if error %}
+        <div class = "error">
+            {{error}}
+        </div>
+    {% endif %}
+    <form method="POST">
+        <input type="password" name="password" autocomplete="current-password" placeholder="password">
+        <button type="submit">login</button>
+    </form>
 </body>
 </html>
