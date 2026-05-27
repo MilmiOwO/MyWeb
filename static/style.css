@@ -1,6 +1,11 @@
+@font-face {
+    font-family: 'Noto Sans KR';
+    src: url('/static/fonts/NotoSansKR-VariableFont_wght.ttf') format('trutype');
+    font-weight: 100 900;
+}
+
 body {
     background-color: #27323e;
     color: white;
-    font-family: 'Noto Sans KR', sans-serif;
-    font-weight: 500;
+    font-family: 'Noto Sans KR', sans-serif
 }

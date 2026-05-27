@@ -19,23 +19,31 @@ ip = line.split()[-1]
 print(ip + ':' + str(port))
 @app.route('/')
 def index():
-    return render_template('index.html')
+    if session.get('is_admin'):
+        return render_template('index.html', message = 'hello, admin!')
+    else:
+        return render_template('index.html')
 
 @app.route('/requestbin')
 def requestbin():
-    return "미구현"
+    return "coming soon"
 
 @app.route('/get_authority', methods=['GET', 'POST'])
 def get_authority():
     if request.method == 'GET':
-        return "auth.html"
+        if session.get('is_admin') == True:
+            return "you already have permission!"
+        else:
+            return render_template("auth.html")
     elif request.method == 'POST':
         admin_pwHash = open('adminPasswordHash.txt', 'r').read().strip()
         pw = request.form.get('password')
         hash = ph.hash(pw)
         if hash == admin_pwHash:
             session['is_admin'] = True
-            return
+            return render_template("index.html")
+        else:
+            return render_template("auth.html")
 
 
 
