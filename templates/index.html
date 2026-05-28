@@ -5,13 +5,17 @@
     <title>Main</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+    {% include 'partials/alerter.html' %}
 </head>
 <body>
-    {% if alert %}
-        <div class = "alert">
-            {{alert}}
+    {% if message %}
+        <div class = "message">
+            {{message}}
         </div>
     {% endif %}
-    <p>안녕하세요 다람쥐 헌 쳇바퀴에 타고파</p>
+    <p>hello!</p>
+    <a href="/auth">
+        <div class="box">get authorization</div>
+    </a>
 </body>
 </html>

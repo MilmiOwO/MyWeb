@@ -1,5 +1,4 @@
-import os
-from flask import Flask, request, session, render_template
+from flask import Flask, request, session, render_template, redirect, url_for, abort, flash
 from argon2 import PasswordHasher
 import subprocess
 
@@ -33,18 +32,14 @@ def auth():
     if request.method == 'POST':
         admin_pwHash = open('env/adminPasswordHash.txt', 'r').read().strip()
         pw = request.form.get('password')
-        hash = ph.hash(pw)
-        print(pw)
-        print(hash)
-        print(admin_pwHash)
-        if hash == admin_pwHash:
+        if ph.verify(admin_pwHash, pw):
             session['is_admin'] = True
-            return render_template('index.html', alert = 'login success - Hello, admin!')
+            return render_template('index.html', message = 'login success - Hello, admin!')
         else:
             return render_template('auth.html', error = 'wrong password')
     else:
-        if session.get('is_admin') == True:
-            return render_template('index.html', alert = 'you already have a permission!')
+        if session.get('is_admin') and session.get('is_admin') == True:
+            return render_template('auth.html', alert = 'you already have permission!', redirect = '/')
         else:
             return render_template('auth.html')
 
