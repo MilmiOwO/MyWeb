@@ -117,6 +117,10 @@ input {
     margin: 1.5rem;
 }
 
+.passwordBox:hover {
+    background-color: rgb(48, 48, 48);
+}
+
 .loginButton {
     background-color: rgb(16, 16, 16);
     color: rgb(239, 239, 239);
