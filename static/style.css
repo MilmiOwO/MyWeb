@@ -1,45 +1,132 @@
 @font-face {
     font-family: 'Noto Sans KR';
     src: url('/static/fonts/NotoSansKR-VariableFont_wght.ttf') format('trutype');
-    font-weight: 100 900;
+    font-weight: 100 800;
 }
 
 body {
-    background-color: rgb(16,16,16);
-    color: white;
+    background-color: rgb(16, 16, 16);
+    color: rgb(239, 239, 239);
     font-family: 'Noto Sans KR', sans-serif;
-    padding: 50px;
+    margin: 0;
 }
 
 a {
     text-decoration: none;
-    color: white;
+    color: rgb(239, 239, 239);
 }
 
-.message {
+hr {
+    background-color: rgb(239, 239, 239);
+    height: 0.0625rem;
+    border: 0;
+}
+
+input {
+    outline: none;
+}
+
+.navbar {
+    padding: 0.5rem;
+    border-bottom: 0.125rem solid rgb(239, 239, 239);
+}
+
+.navbar-title {
+    border-radius: 1rem;
+    display: inline-block;
+    font-weight: 800;
+    font-size: 2rem;
+    margin: auto 0.5rem;
+    padding: 0.5rem 1rem;
+}
+
+.navbar-title:hover {
+    background-color: rgb(48, 48, 48);
+}
+
+.navbar-element {
+    display: inline-block;
+    border-radius: 0.5rem;
+    margin: auto 0.25rem;
+    padding: 0.5rem 1rem;
+}
+
+.navbar-element:hover {
+    background-color: rgb(48, 48, 48);
+}
+
+.main {
+    padding: 3rem
+}
+
+.messageBox {
+    display: flex;
     background-color: rgba(221, 153, 51, 0.3);
     border: 2px dashed rgb(221, 153, 51);
-    border-radius: 10px;
-    padding: 10px 10px;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
 }
 
-.error {
-    background-color: rgba(221, 51, 51, 0.3);
-    border: 2px dashed rgb(221, 51, 51);
-    border-radius: 10px;
-    padding: 10px 10px;
+.messageBoxCloseButton {
+    background-color: transparent;
+    border: none;
+    Color: rgb(239, 239, 239);
+    margin-left: auto;
 }
 
 .box{
-    border: 2px solid white;
-    border-radius: 10px;
-    padding: 10px;
+    border: 0.125rem solid rgb(239, 239, 239);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
     display: inline-block;
 }
 
-.box-link {
-    border: 2px solid white;
-    border-radius: 10px;
-    padding: 10px;
+.box-clickable {
+    border: 0.125rem solid rgb(239, 239, 239);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
     display: inline-block;
+}
+
+.box-clickable:hover {
+    background-color: rgb(48, 48, 48);
+}
+
+.loginForm {
+    border: 0.125rem solid rgb(239, 239, 239);
+    border-radius: 0.5rem;
+    width: 32rem;
+    margin: 8rem auto auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.formTitle {
+    text-align: center;
+    margin: 2rem
+}
+
+.passwordBox {
+    background-color: rgb(16, 16, 16);
+    color: rgb(239, 239, 239);
+    width: 16rem;
+    border: 0.125rem solid rgb(239, 239, 239);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin: 1.5rem;
+}
+
+.loginButton {
+    background-color: rgb(16, 16, 16);
+    color: rgb(239, 239, 239);
+    border: 0.125rem solid rgb(239, 239, 239);
+    border-radius: 0.5rem;
+    padding: 1rem 2rem;
+    margin: 0.5rem;
+}
+
+.loginButton:hover {
+    cursor: pointer;
+    background-color: rgb(48, 48, 48);
 }

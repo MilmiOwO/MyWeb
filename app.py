@@ -19,29 +19,31 @@ line = lines[idx + 4]
 ip = line.split()[-1]
 print(ip + ':' + str(port))
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
 
-@app.route('/requestbin')
-def requestbin():
+@app.route('/tools', methods=['GET'])
+def tools():
     return "coming soon"
-
 @app.route('/auth', methods=['GET', 'POST'])
 def auth():
     if request.method == 'POST':
         admin_pwHash = open('env/adminPasswordHash.txt', 'r').read().strip()
         pw = request.form.get('password')
         if ph.verify(admin_pwHash, pw):
-            session['is_admin'] = True
-            return render_template('index.html', message = 'login success - Hello, admin!')
+            if session.get('is_admin') and session.get('is_admin') == True:
+                flash('you already have permission!', 'message')
+                return redirect(url_for('index'))
+            else:
+                session['is_admin'] = True
+                return render_template('index.html', message = 'login success - Hello, admin!')
         else:
-            return render_template('auth.html', error = 'wrong password')
+            return render_template('auth.html', message = 'wrong password')
     else:
-        if session.get('is_admin') and session.get('is_admin') == True:
-            return render_template('auth.html', alert = 'you already have permission!', redirect = '/')
-        else:
-            return render_template('auth.html')
+        return render_template('auth.html')
+
+app.route('/logout', methods=['POST'])
 
 
 if __name__ == '__main__':
