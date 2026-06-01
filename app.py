@@ -25,7 +25,12 @@ def index():
 
 @app.route('/tools', methods=['GET'])
 def tools():
-    return "coming soon"
+    return render_template('tools.html')
+
+@app.route('/about', methods=['GET'])
+def about():
+    return render_template('about.html')
+
 @app.route('/auth', methods=['GET', 'POST'])
 def auth():
     if request.method == 'POST':
