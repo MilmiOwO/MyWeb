@@ -1,8 +1,8 @@
 <script>
     {% if alert %}
-        alert({{alert | tojson}});
+        alert({{ alert | tojson }});
     {% endif %}
     {% if redirect %}
-        location.href = {{redirect | tojson}};
+        location.href = {{ redirect | tojson }};
     {% endif %}
 </script>

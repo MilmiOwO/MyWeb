@@ -1,3 +1,4 @@
+from argon2.exceptions import VerifyMismatchError
 from flask import Flask, request, session, render_template, redirect, url_for, abort, flash
 from argon2 import PasswordHasher
 import subprocess
@@ -36,16 +37,17 @@ def auth():
     if request.method == 'POST':
         admin_pwHash = open('env/adminPasswordHash.txt', 'r').read().strip()
         pw = request.form.get('password')
-        if ph.verify(admin_pwHash, pw):
-            if session.get('is_admin') and session.get('is_admin') == True:
-                flash('you already have permission!', 'message')
-                return redirect(url_for('index'))
-            else:
+        try:
+            if ph.verify(admin_pwHash, pw):
                 session['is_admin'] = True
-                return render_template('index.html', message = 'login success - Hello, admin!')
-        else:
-            return render_template('auth.html', message = 'wrong password')
+                return render_template('auth.html', alert='Login success', redirect=url_for('index'))
+        except VerifyMismatchError:
+            return render_template('auth.html', error='Wrong password')
+        except Exception as e:
+            return render_template('auth.html', error='An error occurred while verifying the password ({e})'.format(e=e))
     else:
+        if session.get('is_admin') and session.get('is_admin') == True:
+            return render_template('auth.html', alert='You already have permission', redirect=url_for('index'))
         return render_template('auth.html')
 
 app.route('/logout', methods=['POST'])

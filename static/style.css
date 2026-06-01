@@ -4,6 +4,12 @@
     font-weight: 100 800;
 }
 
+@media (max-width: 480px) {
+  html {
+    font-size: 48px;
+  }
+}
+
 *, *::before, *::after {
     box-sizing: border-box;
 }
@@ -26,8 +32,23 @@ hr {
     border: 0;
 }
 
+p {
+    margin: 0;
+}
+
 input {
     outline: none;
+}
+
+input[type="text"],
+input[type="password"] {
+    background-color: rgb(16, 16, 16);
+    color: rgb(239, 239, 239);
+    width: 100%;
+    max-width: 16rem;
+    border: 0.125rem solid rgb(239, 239, 239);
+    border-radius: 0.5rem;
+    padding: 1rem;
 }
 
 .navbar {
@@ -63,25 +84,6 @@ input {
     padding: 3rem
 }
 
-.message-box {
-    display: flex;
-    background-color: rgba(221, 153, 51, 0.3);
-    border: 2px dashed rgb(221, 153, 51);
-    border-radius: 0.5rem;
-    padding: 0.5rem;
-}
-
-.message {
-    margin: 0.5rem
-}
-
-.message-box-close-button {
-    background-color: transparent;
-    border: none;
-    Color: rgb(239, 239, 239);
-    margin-left: auto;
-}
-
 .box{
     border: 0.125rem solid rgb(239, 239, 239);
     border-radius: 0.5rem;
@@ -101,7 +103,13 @@ input {
     cursor: pointer;
 }
 
-.form {
+.error {
+    text-align: center;
+    font-size: 1rem;
+    color: red;
+}
+
+.login-form {
     border: 0.125rem solid rgb(239, 239, 239);
     border-radius: 1rem;
     max-width: 32rem;
@@ -112,38 +120,31 @@ input {
     align-items: center;
 }
 
-.form-title {
+.login-form__title {
     text-align: center;
     margin: 2rem
 }
 
-.input-box {
-    background-color: rgb(16, 16, 16);
-    color: rgb(239, 239, 239);
-    width: 100%;
-    max-width: 16rem;
-    border: 0.125rem solid rgb(239, 239, 239);
-    border-radius: 0.5rem;
-    padding: 1rem;
-    margin: 1.5rem;
+.login-form__password-box {
+    margin: 0.5rem
 }
 
-.input-box:hover {
+.login-form__password-box:hover {
     background-color: rgb(48, 48, 48);
 }
 
-.login-button {
+.login-form__login-button {
     background-color: rgb(16, 16, 16);
     color: rgb(239, 239, 239);
-
+    text-align: center;
     max-width: 100%;
     border: 0.125rem solid rgb(239, 239, 239);
     border-radius: 0.5rem;
     padding: 1rem 2rem;
-    margin: 2rem 0;
+    margin: 3rem 0 2rem;
 }
 
-.login-button:hover {
+.login-form__login-button:hover {
     cursor: pointer;
     background-color: rgb(48, 48, 48);
 }
