@@ -3,14 +3,36 @@
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Milmi</title>
-    <script src="static/script.js" defer></script>
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
     <link rel="icon" href="static/favicon.png" type="image/png">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     {% include "partials/redirect.html" %}
 </head>
 <body>
     {% include "partials/navbar.html" %}
-    <div class="main">
+    <div class="bin-wrapper">
+        <div class="bin-sidebar">
+            <div class="bin-sidebar-header">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="selectAll">
+                    <label for="selectAll">Select all</label>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn-action" onclick="loadRequests()">refresh</button>
+                    <button class="btn-action btn-delete" onclick="deleteSelectedRequests()">delete</button>
+                </div>
+            </div>
+
+            <div class="bin-request-list" id="requestList">
+                <div class="empty-message">
+                    Loading...
+                </div>
+            </div>
+        </div>
+
+        <div class="bin-content" id="requestDetail">
+            <div class="content-placeholder">request info</div>
+        </div>
     </div>
 </body>
 </html>
