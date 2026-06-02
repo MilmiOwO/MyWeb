@@ -15,7 +15,7 @@
 }
 
 body {
-    background-color: rgb(16, 16, 16);
+    background-color: rgb(15, 15, 15);
     color: rgb(239, 239, 239);
     font-family: 'Noto Sans KR', sans-serif;
     margin: 0;
@@ -36,7 +36,7 @@ input {
 
 input[type="text"],
 input[type="password"] {
-    background-color: rgb(16, 16, 16);
+    background-color: rgb(15, 15, 15);
     color: rgb(239, 239, 239);
     width: 100%;
     max-width: 16rem;
@@ -44,17 +44,18 @@ input[type="password"] {
     border-radius: 0.5rem;
     padding: 1rem;
     :hover {
-        background-color: rgb(48, 48, 48);
+        background-color: rgb(47, 47, 47);
     }
 }
 
 .navbar {
+    height: 5rem;
     padding: 0.5rem;
     border-bottom: 0.125rem solid rgb(239, 239, 239);
 }
 
 .navbar-title {
-    border-radius: 1rem;
+    border-radius: 0.5rem;
     display: inline-block;
     font-weight: 800;
     font-size: 2rem;
@@ -63,7 +64,7 @@ input[type="password"] {
 }
 
 .navbar-title:hover {
-    background-color: rgb(48, 48, 48);
+    background-color: rgb(47, 47, 47);
 }
 
 .navbar-element {
@@ -75,7 +76,7 @@ input[type="password"] {
 }
 
 .navbar-element:hover {
-    background-color: rgb(48, 48, 48);
+    background-color: rgb(47, 47, 47);
 }
 
 .navbar-element.active {
@@ -83,7 +84,9 @@ input[type="password"] {
 }
 
 .main {
-    padding: 3rem
+    padding: 3rem;
+    height: calc(100vh - 10rem);
+    border-bottom: 0.125rem solid rgb(239, 239, 239);
 }
 
 .box{
@@ -103,7 +106,7 @@ input[type="password"] {
 }
 
 .box-clickable:hover {
-    background-color: rgb(48, 48, 48);
+    background-color: rgb(47, 47, 47);
     cursor: pointer;
 }
 
@@ -115,7 +118,7 @@ input[type="password"] {
 
 .login-form {
     border: 0.125rem solid rgb(239, 239, 239);
-    border-radius: 1rem;
+    border-radius: 0.5rem;
     max-width: 32rem;
     min-width: 8rem;
     margin: 8rem auto auto;
@@ -134,11 +137,11 @@ input[type="password"] {
 }
 
 .login-form__password-box:hover {
-    background-color: rgb(48, 48, 48);
+    background-color: rgb(47, 47, 47);
 }
 
 .login-form__login-button {
-    background-color: rgb(16, 16, 16);
+    background-color: rgb(15, 15, 15);
     color: rgb(239, 239, 239);
     text-align: center;
     max-width: 100%;
@@ -150,7 +153,7 @@ input[type="password"] {
 
 .login-form__login-button:hover {
     cursor: pointer;
-    background-color: rgb(48, 48, 48);
+    background-color: rgb(47, 47, 47);
 }
 
 .bin-wrapper {
@@ -184,7 +187,7 @@ input[type="password"] {
 }
 
 input[type="checkbox"] {
-    accent-color: rgb(48, 48, 48);
+    accent-color: rgb(47, 47, 47);
     width: 1rem;
     height: 1rem;
     cursor: pointer;
@@ -206,7 +209,7 @@ input[type="checkbox"] {
 }
 
 .bin-request-item:hover {
-    background-color: rgb(48, 48, 48);
+    background-color: rgb(47, 47, 47);
 }
 
 .bin-content {
@@ -219,7 +222,7 @@ input[type="checkbox"] {
 }
 
 .content-placeholder {
-    color: rgb(239, 239, 239);
+    color: rgb(127, 127, 127);
     font-size: 1.2rem;
 }
 
@@ -230,17 +233,17 @@ input[type="checkbox"] {
 
 .bin-request-list::-webkit-scrollbar-thumb,
 .bin-content::-webkit-scrollbar-thumb {
-    background-color: rgb(48, 48, 48);
+    background-color: rgb(47, 47, 47);
 }
 
 .bin-request-list::-webkit-scrollbar-track,
 .bin-content::-webkit-scrollbar-track {
-    background-color: rgb(16, 16, 16);
+    background-color: rgb(15, 15, 15);
 }
 
 .empty-message {
     padding: 2rem 1rem;
-    color: rgb(120, 120, 120);
+    color: rgb(127, 127, 127);
     text-align: center;
 }
 
@@ -253,7 +256,7 @@ input[type="checkbox"] {
     background-color: transparent;
     color: rgb(239, 239, 239);
     border: 0.125rem solid rgb(239, 239, 239);
-    border-radius: 0.25rem;
+    border-radius: 0.5rem;
     padding: 0.25rem 0.5rem;
     font-family: inherit;
     font-size: 0.9rem;
@@ -261,7 +264,7 @@ input[type="checkbox"] {
 }
 
 .btn-action:hover {
-    background-color: rgb(48, 48, 48);
+    background-color: rgb(47, 47, 47);
 }
 
 .detail-container {
@@ -279,10 +282,10 @@ input[type="checkbox"] {
 }
 
 .detail-pre {
-    background-color: rgb(24, 24, 24);
+    background-color: rgb(23, 23, 23);
     padding: 1rem;
-    border-radius: 0.25rem;
-    border: 0.0625rem solid rgb(48, 48, 48);
+    border-radius: 0.5rem;
+    border: 0.0625rem solid rgb(47, 47, 47);
     overflow-x: auto;
     color: rgb(200, 200, 200);
     font-family: monospace;
@@ -292,10 +295,10 @@ input[type="checkbox"] {
     display: flex;
     gap: 1.5rem;
     flex-wrap: wrap;
-    border-bottom: 0.0625rem solid rgb(48, 48, 48);
+    border-bottom: 0.0625rem solid rgb(47, 47, 47);
     padding-bottom: 1rem;
     margin-bottom: 1rem;
-    color: rgb(150, 150, 150);
+    color: rgb(143, 143, 143);
     font-size: 0.9rem;
 }
 
@@ -303,10 +306,10 @@ input[type="checkbox"] {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 1.5rem;
-    background-color: rgb(24, 24, 24);
-    border-radius: 0.25rem;
+    background-color: rgb(23, 23, 23);
+    border-radius: 0.5rem;
     overflow: hidden;
-    border: 0.0625rem solid rgb(48, 48, 48);
+    border: 0.0625rem solid rgb(47, 47, 47);
     table-layout: fixed;
 }
 
@@ -314,7 +317,7 @@ input[type="checkbox"] {
 .detail-table td {
     padding: 0.75rem 1rem;
     text-align: left;
-    font-size: 0.95rem;
+    font-size: 1rem;
     border-bottom: 0.0625rem solid rgb(36, 36, 36);
     vertical-align: top;
 }
@@ -340,15 +343,15 @@ input[type="checkbox"] {
 }
 
 .detail-empty {
-    color: rgb(120, 120, 120);
+    color: rgb(127, 127, 127);
     font-style: italic;
     padding: 0.5rem 0 1.5rem 0;
 }
 
 .detail-body-wrapper {
-    background-color: rgb(24, 24, 24);
-    border: 0.0625rem solid rgb(48, 48, 48);
-    border-radius: 0.25rem;
+    background-color: rgb(23, 23, 23);
+    border: 0.0625rem solid rgb(47, 47, 47);
+    border-radius: 0.5rem;
     padding: 1rem;
 }
 
@@ -367,17 +370,30 @@ input[type="checkbox"] {
 }
 
 .copy-btn {
-    background-color: rgb(36, 36, 36);
+    background-color: rgb(35, 35, 35);
     color: rgb(200, 200, 200);
-    border: 0.0625rem solid rgb(64, 64, 64);
+    border: 0.0625rem solid rgb(63, 63, 63);
     padding: 0.4rem 0.8rem;
-    border-radius: 0.25rem;
+    border-radius: 0.5rem;
     cursor: pointer;
     font-size: 0.85rem;
     transition: background-color 0.2s;
 }
 
 .copy-btn:hover {
-    background-color: rgb(48, 48, 48);
+    background-color: rgb(47, 47, 47);
     color: #fff;
+}
+
+.copyright-box {
+    width: 100%;
+    height: 5rem;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.copyright-text {
+    color: rgb(127, 127, 127);
 }

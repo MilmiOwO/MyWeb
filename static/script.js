@@ -159,26 +159,18 @@ source.onmessage = function(event) {
 };
 
 function copyRawHttp(base64Str) {
-    // 줄바꿈 및 특수문자 깨짐 방지를 위해 인코딩된 base64를 다시 디코딩합니다.
     const textToCopy = decodeURIComponent(escape(atob(base64Str.trim())));
-
     navigator.clipboard.writeText(textToCopy).then(() => {
-        alert('HTTP 원본 요청이 클립보드에 복사되었습니다!');
+        alert('Copied to clipboard');
     }).catch(err => {
-        console.error('복사 실패:', err);
+        console.error('copy failed:', err);
     });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. 현재 브라우저 주소창의 경로를 가져옵니다 (예: '/requestbin')
     const currentPath = window.location.pathname;
-
-    // 2. 상단 바에 있는 모든 메뉴 링크들('a' 태그)을 가져옵니다
     const navLinks = document.querySelectorAll('.navbar-element');
-
-    // 3. 각 링크의 주소(href)와 현재 주소창의 경로가 일치하면 active 클래스를 추가합니다
     navLinks.forEach(link => {
-        // link.getAttribute('href')는 '/requestbin', '/about' 등을 반환합니다.
         if (link.getAttribute('href') === currentPath) {
             link.classList.add('active');
         }
