@@ -1,10 +1,11 @@
+from functools import wraps
 from argon2.exceptions import VerifyMismatchError
-from flask import Flask, request, Response, session, render_template, url_for, jsonify
+from flask import Flask, request, Response, session, render_template, url_for, jsonify, redirect
 from argon2 import PasswordHasher
 import subprocess
 import datetime
-import uuid
 import queue
+import uuid
 
 app = Flask(__name__)
 app.secret_key = open('env/secret_key.txt').read().strip()
@@ -26,13 +27,29 @@ print(ip + ':' + str(port))
 requests_store = []
 announcers = []
 
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if session.get('is_admin'):
+            return f(*args, **kwargs)
+        if request.path.startswith('/api/'):
+            return {'error': 'Unauthorized'}, 403
+        return render_template('no-permission.html', alert='Login Required', redirect='/auth')
+    return decorated_function
+
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
 
+@app.route('/requestbin')
+@admin_required
+def requestbin():
+    return render_template('requestbin.html')
+
+
 @app.route('/q', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH'])
 @app.route('/q/<path:subpath>', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH'])
-def catch_request(subpath):
+def catch_request(subpath=None):
     headers_str = "\n".join([f"{k}: {v}" for k, v in request.headers.items()])
     body_str = request.get_data(as_text=True) or ""
     raw_http = f"{request.method} {request.path} HTTP/1.1\n{headers_str}\n\n{body_str}"
@@ -58,15 +75,13 @@ def catch_request(subpath):
             announcers.pop(i)
     return {'status': 'good'}, 200
 
-@app.route('/requestbin')
-def view_requests():
-    return render_template('requestbin.html')
-
 @app.route('/api/requests')
+@admin_required
 def get_requests():
     return jsonify({"requests": requests_store})
 
 @app.route('/api/requests/delete', methods=['POST'])
+@admin_required
 def delete_requests():
     global requests_store
     data = request.get_json()
@@ -78,6 +93,7 @@ def delete_requests():
     })
 
 @app.route('/api/stream')
+@admin_required
 def stream():
     q = queue.Queue()
     announcers.append(q)
@@ -104,7 +120,7 @@ def auth():
         except Exception as e:
             return render_template('auth.html', error='An error occurred while verifying the password ({e})'.format(e=e))
     else:
-        if session.get('is_admin') and session.get('is_admin') == True:
+        if session.get('is_admin'):
             return render_template('auth.html', alert='You already have permission', redirect=url_for('index'))
         return render_template('auth.html')
 
@@ -112,4 +128,4 @@ app.route('/logout', methods=['POST'])
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port, threaded=True)

@@ -6,7 +6,7 @@
 
 @media (max-width: 480px) {
   html {
-    font-size: 14px;
+    font-size: 11px;
   }
 }
 
@@ -67,6 +67,7 @@ input[type="password"] {
 }
 
 .navbar-element {
+    font-weight: 500;
     display: inline-block;
     border-radius: 0.5rem;
     margin: auto 0.25rem;
@@ -78,8 +79,7 @@ input[type="password"] {
 }
 
 .navbar-element.active {
-    font-weight: 700;          /* 볼드체 적용 */
-    color: rgb(255, 255, 255); /* 조금 더 밝은 흰색으로 강조 */
+    text-decoration: underline;
 }
 
 .main {
@@ -162,7 +162,7 @@ input[type="password"] {
 }
 
 .bin-sidebar {
-    width: 20rem;
+    width: 18rem;
     min-width: 16rem;
     border-right: 0.125rem solid rgb(239, 239, 239);
     display: flex;
@@ -299,7 +299,6 @@ input[type="checkbox"] {
     font-size: 0.9rem;
 }
 
-/* 데이터가 꽉 차 보이는 표(Table) 레이아웃 */
 .detail-table {
     width: 100%;
     border-collapse: collapse;
@@ -308,7 +307,7 @@ input[type="checkbox"] {
     border-radius: 0.25rem;
     overflow: hidden;
     border: 0.0625rem solid rgb(48, 48, 48);
-    table-layout: fixed; /* 테이블 폭을 강제 고정하여 균형 유지 */
+    table-layout: fixed;
 }
 
 .detail-table th,
@@ -320,7 +319,6 @@ input[type="checkbox"] {
     vertical-align: top;
 }
 
-/* 표의 왼쪽 항목(Key) 영역 - 가로 길이를 제한하여 가독성 확보 */
 .detail-table th {
     width: 14rem;
     color: rgb(160, 160, 160);
@@ -330,7 +328,6 @@ input[type="checkbox"] {
     word-break: break-all;
 }
 
-/* 표의 오른쪽 내용(Value) 영역 - 가로 스크롤을 없애고 아래로 깔끔하게 줄바꿈 */
 .detail-table td {
     color: rgb(220, 220, 220);
     word-break: break-all;
@@ -342,14 +339,12 @@ input[type="checkbox"] {
     border-bottom: none;
 }
 
-/* 데이터가 비어있을 때 메시지 */
 .detail-empty {
     color: rgb(120, 120, 120);
     font-style: italic;
     padding: 0.5rem 0 1.5rem 0;
 }
 
-/* 본문(Body) 영역 랩핑 가독성 패치 */
 .detail-body-wrapper {
     background-color: rgb(24, 24, 24);
     border: 0.0625rem solid rgb(48, 48, 48);
@@ -361,7 +356,7 @@ input[type="checkbox"] {
     margin: 0;
     color: rgb(200, 200, 200);
     font-family: monospace;
-    white-space: pre-wrap; /* JSON 데이터 가로 줄바꿈 허용 */
+    white-space: pre-wrap;
     word-break: break-all;
 }
 

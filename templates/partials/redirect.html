@@ -3,6 +3,6 @@
         alert({{ alert | tojson }});
     {% endif %}
     {% if redirect %}
-        location.href = {{ redirect | tojson }};
+        location.replace({{ redirect | tojson }});
     {% endif %}
 </script>
