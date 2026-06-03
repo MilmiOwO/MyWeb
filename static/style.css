@@ -180,7 +180,7 @@ input[type="password"] {
 .bin-wrapper {
     display: flex;
     width: 100%;
-    height: calc(100vh - 3rem);
+    height: calc(100vh - 8rem);
     border-bottom: 0.125rem solid rgb(239, 239, 239);
     margin: 0 auto;
 }
