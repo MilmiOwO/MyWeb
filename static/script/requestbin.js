@@ -1,3 +1,5 @@
+let eventSource = null;
+
 async function loadRequests() {
     const listContainer = document.getElementById('requestList');
     if (!listContainer) return;
@@ -138,26 +140,6 @@ async function deleteSelectedRequests() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    loadRequests();
-    const selectAllCheckbox = document.getElementById('selectAll');
-    if (selectAllCheckbox) {
-        selectAllCheckbox.addEventListener('change', (e) => {
-            const isChecked = e.target.checked;
-            const checkboxes = document.querySelectorAll('.request-checkbox');
-            checkboxes.forEach(cb => cb.checked = isChecked);
-        });
-    }
-});
-
-const source = new EventSource('/api/stream');
-
-source.onmessage = function(event) {
-    if (event.data === 'update') {
-        loadRequests();
-    }
-};
-
 function copyRawHttp(base64Str) {
     const textToCopy = decodeURIComponent(escape(atob(base64Str.trim())));
     navigator.clipboard.writeText(textToCopy).then(() => {
@@ -168,11 +150,26 @@ function copyRawHttp(base64Str) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const currentPath = window.location.pathname;
-    const navLinks = document.querySelectorAll('.navbar-element');
-    navLinks.forEach(link => {
-        if (link.getAttribute('href') === currentPath) {
-            link.classList.add('active');
+    loadRequests();
+    const selectAllCheckbox = document.getElementById('selectAll');
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', (e) => {
+            const isChecked = e.target.checked;
+            const checkboxes = document.querySelectorAll('.request-checkbox');
+            checkboxes.forEach(cb => cb.checked = isChecked);
+        });
+    }
+
+    eventSource = new EventSource('/api/stream');
+    eventSource.onmessage = function(event) {
+        if (event.data === 'update') {
+            loadRequests();
         }
-    });
+    };
+});
+
+window.addEventListener('beforeunload', () => {
+    if (eventSource) {
+        eventSource.close();
+    }
 });

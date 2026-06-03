@@ -89,6 +89,27 @@ input[type="password"] {
     border-bottom: 0.125rem solid rgb(239, 239, 239);
 }
 
+.subtitle {
+    font-weight: 700;
+    font-size: 4rem;
+}
+
+.cursor {
+    font-weight: 700;
+    font-size: 4rem;
+    animation: blink 1s steps(1, start) infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+.text {
+    font-weight: 500;
+    font-size: 1.5rem;
+}
+
 .box{
     border: 0.125rem solid rgb(239, 239, 239);
     border-radius: 0.5rem;

@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Milmi</title>
-    <script src="static/script.js" defer></script>
+    <script src="{{ url_for('static', filename='script/common.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='script/home.js') }}" defer></script>
     <link rel="icon" href="static/favicon.png" type="image/png">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     {% include "partials/redirect.html" %}
@@ -11,7 +12,9 @@
 <body>
     {% include "partials/navbar.html" %}
     <div class="main">
-        <p>hello!</p>
+        <span class="subtitle" id="subtitle">안녕하세요.</span>
+        <span class="cursor" id="cursor">|</span>
+        <p class="text">광주 소프트웨어 마이스터고의 웹 보안 엔지니어 + Flask 기반 웹 개발자 Milmi입니다.</p>
     </div>
     {% include "partials/copyright.html" %}
 </body>
