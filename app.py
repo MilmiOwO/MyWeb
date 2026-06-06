@@ -1,8 +1,7 @@
 from functools import wraps
 from argon2.exceptions import VerifyMismatchError
-from flask import Flask, request, Response, session, render_template, url_for, jsonify, redirect
+from flask import Flask, request, Response, session, render_template, url_for, jsonify
 from argon2 import PasswordHasher
-import subprocess
 import datetime
 import queue
 import uuid
@@ -12,18 +11,6 @@ app.secret_key = open('env/secret_key.txt').read().strip()
 port = 5000
 
 ph = PasswordHasher()
-
-result = subprocess.run(
-    ['ipconfig'],
-    capture_output=True,
-    text=True
-)
-lines = result.stdout.split('\n')
-idx = lines.index('Wireless LAN adapter Wi-Fi:')
-line = lines[idx + 4]
-ip = line.split()[-1]
-print(ip + ':' + str(port))
-
 requests_store = []
 announcers = []
 
@@ -123,9 +110,6 @@ def auth():
         if session.get('is_admin'):
             return render_template('auth.html', alert='You already have permission', redirect=url_for('index'))
         return render_template('auth.html')
-
-app.route('/logout', methods=['POST'])
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port, threaded=True)
