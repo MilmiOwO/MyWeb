@@ -2,17 +2,24 @@ from functools import wraps
 from argon2.exceptions import VerifyMismatchError
 from flask import Flask, request, Response, session, render_template, url_for, jsonify
 from argon2 import PasswordHasher
+from dotenv import load_dotenv
 import datetime
 import queue
 import uuid
-
-app = Flask(__name__)
-app.secret_key = open('env/secret_key.txt').read().strip()
-port = 5000
+import os
 
 ph = PasswordHasher()
 requests_store = []
 announcers = []
+
+load_dotenv()
+
+admin_hash = os.getenv('ADMIN_HASH')
+secret_key = os.getenv('SECRET_KEY')
+
+app = Flask(__name__)
+app.secret_key = secret_key
+port = 5000
 
 def admin_required(f):
     @wraps(f)
@@ -96,10 +103,9 @@ def about():
 @app.route('/auth', methods=['GET', 'POST'])
 def auth():
     if request.method == 'POST':
-        admin_pwHash = open('env/adminPasswordHash.txt', 'r').read().strip()
         pw = request.form.get('password')
         try:
-            if ph.verify(admin_pwHash, pw):
+            if ph.verify(admin_hash, pw):
                 session['is_admin'] = True
                 return render_template('auth.html', alert='Login success', redirect=url_for('index'))
         except VerifyMismatchError:
