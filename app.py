@@ -1,7 +1,7 @@
 from functools import wraps
+from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from flask import Flask, request, Response, session, render_template, url_for, jsonify
-from argon2 import PasswordHasher
 from dotenv import load_dotenv
 import datetime
 import queue
@@ -100,7 +100,7 @@ def stream():
 def about():
     return render_template('about.html')
 
-@app.route('/auth', methods=['GET', 'POST'])
+@app.route('/authorize', methods=['GET', 'POST'])
 def auth():
     if request.method == 'POST':
         pw = request.form.get('password')
