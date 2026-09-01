@@ -103,6 +103,7 @@ def about():
 @app.route('/authorize', methods=['GET', 'POST'])
 def auth():
     if request.method == 'POST':
+        
         pw = request.form.get('password')
         try:
             if ph.verify(admin_hash, pw):
