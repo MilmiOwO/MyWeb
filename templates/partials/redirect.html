@@ -1,0 +1,8 @@
+<script>
+    {% if alert %}
+        alert({{ alert | tojson }});
+    {% endif %}
+    {% if redirect %}
+        location.replace({{ redirect | tojson }});
+    {% endif %}
+</script>

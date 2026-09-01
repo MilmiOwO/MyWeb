@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milmi</title>
+    <script src="{{ url_for('static', filename='script/common.js') }}" defer></script>
+    <link rel="icon" href="static/favicon.png" type="image/png">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    {% include "partials/redirect.html" %}
+</head>
+<body>
+    {% include "partials/navbar.html" %}
+    <div class="main">
+        <form class="login-form" method="POST">
+            <h1 class="login-form__title">Login</h1>
+            <input type="password" class="login-form__password-box" name="password" autocomplete="current-password" placeholder="password">
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
+            <button type="submit" class="login-form__login-button">Login</button>
+        </form>
+    </div>
+    {% include "partials/copyright.html" %}
+</body>
+</html>
