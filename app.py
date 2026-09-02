@@ -2,13 +2,14 @@ from functools import wraps
 import re
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
-from flask import Flask, request, Response, session, render_template, url_for, jsonify, abort
+from flask import Flask, request, Response, session, render_template, url_for, jsonify, abort, send_file
 from dotenv import load_dotenv
 import sqlite3
 import datetime
 import queue
 import uuid
 import os
+from werkzeug.utils import secure_filename
 
 ph = PasswordHasher()
 requests_store = []
@@ -22,8 +23,9 @@ secret_key = os.getenv('SECRET_KEY', 'change-me-in-production')
 app = Flask(__name__)
 app.config['SECRET_KEY'] = secret_key
 app.secret_key = secret_key
-port = 5000
+port = 4000
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
+UPLOAD_DIR = os.path.join(DATA_DIR, 'uploads')
 DB_PATH = os.path.join(DATA_DIR, 'writeups.db')
 
 
@@ -35,45 +37,52 @@ def get_db_connection():
 
 
 def init_db():
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
     conn = get_db_connection()
     conn.execute('''
         CREATE TABLE IF NOT EXISTS writeups (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
-            slug TEXT NOT NULL UNIQUE,
             summary TEXT,
             cover_image TEXT,
-            content TEXT NOT NULL,
+            pdf_file TEXT,
+            pdf_original_name TEXT,
             created_at TEXT DEFAULT CURRENT_TIMESTAMP
         )
     ''')
 
-    existing = conn.execute('SELECT COUNT(*) AS count FROM writeups').fetchone()['count']
-    if existing == 0:
-        sample_rows = [
-            (
-                '첫 번째 기록',
-                'first-entry',
-                '간단한 소개와 이미지가 들어간 첫 번째 라이트업 예시입니다.',
-                'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1200&q=80',
-                '## 시작\n\n이 글은 이미지와 본문이 섞인 라이트업 레이아웃 예시입니다.\n\n![샘플 이미지](https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1200&q=80)\n\n본문 중간에 이미지를 넣으면 더 읽기 좋은 느낌이 납니다.\n\n- 리스트처럼 정리도 가능\n- 사진을 강조할 수 있음\n- 간단한 포스트처럼 보여줄 수 있음',
-            ),
-            (
-                'NAS 배포 메모',
-                'nas-deploy-note',
-                'Docker + nginx + SQLite를 함께 쓰는 NAS 배포 아이디어 정리.',
-                'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80',
-                '## NAS 배포 메모\n\nDocker Compose로 Flask, Nginx, SQLite를 함께 띄우면 운영이 쉬워집니다.\n\n![배포 구조](https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80)\n\n이 구조는 로컬 개발과 운영 환경을 비슷하게 유지하는 데 좋습니다.',
-            ),
-        ]
-        conn.executemany(
-            'INSERT INTO writeups (title, slug, summary, cover_image, content) VALUES (?, ?, ?, ?, ?)',
-            sample_rows,
-        )
+    info = conn.execute('PRAGMA table_info(writeups)').fetchall()
+    columns = [row[1] for row in info]
 
+    if 'pdf_file' not in columns:
+        conn.execute('ALTER TABLE writeups ADD COLUMN pdf_file TEXT')
+    if 'pdf_original_name' not in columns:
+        conn.execute('ALTER TABLE writeups ADD COLUMN pdf_original_name TEXT')
+
+    legacy_columns = {'slug', 'content'}
+    if legacy_columns.intersection(columns):
+        conn.execute('ALTER TABLE writeups RENAME TO writeups_old')
+        conn.execute('''
+            CREATE TABLE writeups (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT NOT NULL,
+                summary TEXT,
+                cover_image TEXT,
+                pdf_file TEXT,
+                pdf_original_name TEXT,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        conn.execute('''
+            INSERT INTO writeups (id, title, summary, cover_image, pdf_file, pdf_original_name, created_at)
+            SELECT id, title, summary, cover_image, pdf_file, pdf_original_name, created_at
+            FROM writeups_old
+        ''')
+        conn.execute('DROP TABLE writeups_old')
+
+    conn.execute('DELETE FROM writeups')
     conn.commit()
     conn.close()
-
 
 def simple_inline_format(text):
     text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
@@ -262,60 +271,15 @@ def writeup():
 
 @app.route('/writeup/<int:writeup_id>', methods=['GET'])
 def writeup_detail(writeup_id):
-    conn = get_db_connection()
-    row = conn.execute(
-        'SELECT * FROM writeups WHERE id = ?', (writeup_id,)
-    ).fetchone()
-    conn.close()
-
-    if row is None:
-        return render_template('writeups.html', writeups=[], error='없는 글입니다.'), 404
-
-    return render_template(
-        'writeup.html',
-        writeup=dict(row),
-        content=render_writeup_content(row['content'])
-    )
+    return render_template('writeup_detail.html')
 
 
 @app.route('/writeup/upload', methods=['GET', 'POST'])
 @admin_required
 def writeup_upload():
     if request.method == "POST":
-        title = request.form.get('title', '').strip()
-        slug = request.form.get('slug', '').strip() or re.sub(r'[^a-z0-9\-]+', '-', title.lower()).strip('-')
-        summary = request.form.get('summary', '').strip()
-        cover_image = request.form.get('cover_image', '').strip()
-        content = request.form.get('content', '').strip()
-
-        if not title or not content:
-            return jsonify({"status": "error", "message": "title and content are required"}), 400
-
-        conn = get_db_connection()
-        try:
-            conn.execute(
-                '''
-                INSERT INTO writeups (title, slug, summary, cover_image, content)
-                VALUES (?, ?, ?, ?, ?)
-                ''',
-                (title, slug, summary or title, cover_image, content),
-            )
-            conn.commit()
-        finally:
-            conn.close()
-
-        return jsonify({"status": "success", "message": "Writeup saved"})
-
-    return render_template('writeups.html', writeups=get_db_connection().execute('SELECT * FROM writeups ORDER BY created_at DESC').fetchall())
-
-
-@app.route('/writeup/edit', methods=['GET', 'POST'])
-@admin_required
-def writeup_edit():
-    if request.method == "POST":
-        return jsonify({"status": "success", "message": "Edit handled"})
-    return render_template('writeups.html', writeups=get_db_connection().execute('SELECT * FROM writeups ORDER BY created_at DESC').fetchall())
-
+        return jsonify({'status': 'success'})
+    return render_template('writeup_upload.html')
 
 @app.route('/authorize', methods=['GET', 'POST'])
 def auth():

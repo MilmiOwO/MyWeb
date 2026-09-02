@@ -11,6 +11,6 @@ RUN pip install --no-cache-dir --upgrade pip \
 
 COPY . .
 
-EXPOSE 5000
+EXPOSE 4000
 
 CMD ["gunicorn", "-c", "gunicorn.conf.py", "wsgi:app"]

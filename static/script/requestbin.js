@@ -14,7 +14,7 @@ async function loadRequests() {
         listContainer.innerHTML = '';
 
         if (requests.length === 0) {
-            listContainer.innerHTML = `<div class="empty-message">Waiting for requests on /q...</div>`;
+            listContainer.innerHTML = `<div class="empty-message">Waiting for requests on /req...</div>`;
             return;
         }
 

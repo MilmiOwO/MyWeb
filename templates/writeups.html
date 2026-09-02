@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Milmi | Writeup</title>
+    <title>Milmi</title>
     <script src="{{ url_for('static', filename='script/common.js') }}" defer></script>
     <link rel="icon" href="static/favicon.png" type="image/png">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
@@ -10,32 +10,7 @@
 </head>
 <body>
     {% include "partials/navbar.html" %}
-    <div class="main writeup-shell">
-        <div class="writeup-header">
-            <div class="subtitle">Writeup</div>
-            <a class="box-clickable" href="/writeup/upload">new post</a>
-        </div>
-
-        {% if error %}
-            <div class="error">{{ error }}</div>
-        {% endif %}
-
-        <div class="writeup-grid">
-            {% for item in writeups %}
-                <a class="writeup-card" href="{{ url_for('writeup_detail', writeup_id=item.id) }}">
-                    {% if item.cover_image %}
-                        <img class="writeup-card__image" src="{{ item.cover_image }}" alt="{{ item.title }}">
-                    {% endif %}
-                    <div class="writeup-card__body">
-                        <div class="writeup-card__meta">{{ item.created_at[:10] }}</div>
-                        <h3 class="writeup-card__title">{{ item.title }}</h3>
-                        <p class="writeup-card__summary">{{ item.summary or item.title }}</p>
-                    </div>
-                </a>
-            {% else %}
-                <div class="box">아직 작성된 글이 없어요.</div>
-            {% endfor %}
-        </div>
+    <div class="main">
     </div>
     {% include "partials/copyright.html" %}
 </body>
