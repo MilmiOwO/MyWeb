@@ -2,15 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Milmi</title>
+    <title>{{ writeup.title }} | Milmi</title>
     <script src="{{ url_for('static', filename='script/common.js') }}" defer></script>
-    <link rel="icon" href="static/favicon.png" type="image/png">
+    <link rel="icon" href="/static/favicon.png" type="image/png">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     {% include "partials/redirect.html" %}
 </head>
 <body>
     {% include "partials/navbar.html" %}
-    <div class="main">
+    <div class="main writeup-shell">
+        <a class="box-clickable writeup-back" href="/writeup">← 목록으로</a>
+
+        <article class="writeup-article">
+            {% if writeup.cover_image %}
+                <img class="writeup-feature" src="{{ writeup.cover_image }}" alt="{{ writeup.title }}">
+            {% endif %}
+
+            <div class="writeup-card__meta">{{ writeup.created_at[:10] }}</div>
+            <h1>{{ writeup.title }}</h1>
+            <div class="writeup-body">
+                {{ content|safe }}
+            </div>
+        </article>
     </div>
     {% include "partials/copyright.html" %}
 </body>
