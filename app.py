@@ -15,9 +15,10 @@ announcers = []
 load_dotenv()
 
 admin_hash = os.getenv('ADMIN_HASH')
-secret_key = os.getenv('SECRET_KEY')
+secret_key = os.getenv('SECRET_KEY', 'change-me-in-production')
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = secret_key
 app.secret_key = secret_key
 port = 5000
 
@@ -103,7 +104,9 @@ def about():
 @app.route('/authorize', methods=['GET', 'POST'])
 def auth():
     if request.method == 'POST':
-        
+        if not admin_hash:
+            return render_template('auth.html', error='Server configuration error: ADMIN_HASH is missing.')
+
         pw = request.form.get('password')
         try:
             if ph.verify(admin_hash, pw):
