@@ -6,7 +6,20 @@ services:
     container_name: my_flask_app
     env_file:
       - .env
-    ports:
-      - "5000:5000"
+    volumes:
+      - ./data:/app/data
+    expose:
+      - "5000"
     restart: unless-stopped
     command: gunicorn -c gunicorn.conf.py wsgi:app
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: my_nginx_proxy
+    depends_on:
+      - flask_web
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    restart: unless-stopped

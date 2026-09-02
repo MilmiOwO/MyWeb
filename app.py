@@ -3,6 +3,7 @@ from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from flask import Flask, request, Response, session, render_template, url_for, jsonify
 from dotenv import load_dotenv
+import sqlite3
 import datetime
 import queue
 import uuid
@@ -100,6 +101,25 @@ def stream():
 @app.route('/about', methods=['GET'])
 def about():
     return render_template('about.html')
+
+@app.route('/writeup', methods=['GET'])
+def writeup():
+    return render_template('writeup.html')
+
+@app.route('/writeup/upload', methods=['GET', 'POST'])
+@admin_required
+def writeup_upload():
+    if request.method == "POST":
+        return jsonify({"status": "success", "message": "Upload handled"})
+    return render_template('writeup.html')
+
+@app.route('/writeup/edit', methods=['GET', 'POST'])
+@admin_required
+def writeup_edit():
+    if request.method == "POST":
+        return jsonify({"status": "success", "message": "Edit handled"})
+    return render_template('writeup.html')
+
 
 @app.route('/authorize', methods=['GET', 'POST'])
 def auth():
