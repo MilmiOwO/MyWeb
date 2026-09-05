@@ -18,7 +18,7 @@ announcers = []
 load_dotenv()
 
 admin_hash = os.getenv('ADMIN_HASH')
-secret_key = os.getenv('SECRET_KEY', 'change-me-in-production')
+secret_key = os.getenv('SECRET_KEY')
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = secret_key
@@ -31,15 +31,15 @@ DB_PATH = os.path.join(DATA_DIR, 'writeups.db')
 
 def get_db_connection():
     os.makedirs(DATA_DIR, exist_ok=True)
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
+    cur = sqlite3.connect(DB_PATH)
+    cur.row_factory = sqlite3.Row
+    return cur
 
 
 def init_db():
     os.makedirs(UPLOAD_DIR, exist_ok=True)
-    conn = get_db_connection()
-    conn.execute('''
+    cur = get_db_connection()
+    cur.execute('''
         CREATE TABLE IF NOT EXISTS writeups (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
@@ -51,18 +51,18 @@ def init_db():
         )
     ''')
 
-    info = conn.execute('PRAGMA table_info(writeups)').fetchall()
+    info = cur.execute('PRAGMA table_info(writeups)').fetchall()
     columns = [row[1] for row in info]
 
     if 'pdf_file' not in columns:
-        conn.execute('ALTER TABLE writeups ADD COLUMN pdf_file TEXT')
+        cur.execute('ALTER TABLE writeups ADD COLUMN pdf_file TEXT')
     if 'pdf_original_name' not in columns:
-        conn.execute('ALTER TABLE writeups ADD COLUMN pdf_original_name TEXT')
+        cur.execute('ALTER TABLE writeups ADD COLUMN pdf_original_name TEXT')
 
     legacy_columns = {'slug', 'content'}
     if legacy_columns.intersection(columns):
-        conn.execute('ALTER TABLE writeups RENAME TO writeups_old')
-        conn.execute('''
+        cur.execute('ALTER TABLE writeups RENAME TO writeups_old')
+        cur.execute('''
             CREATE TABLE writeups (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 title TEXT NOT NULL,
@@ -73,86 +73,16 @@ def init_db():
                 created_at TEXT DEFAULT CURRENT_TIMESTAMP
             )
         ''')
-        conn.execute('''
+        cur.execute('''
             INSERT INTO writeups (id, title, summary, cover_image, pdf_file, pdf_original_name, created_at)
             SELECT id, title, summary, cover_image, pdf_file, pdf_original_name, created_at
             FROM writeups_old
         ''')
-        conn.execute('DROP TABLE writeups_old')
+        cur.execute('DROP TABLE writeups_old')
 
-    conn.execute('DELETE FROM writeups')
-    conn.commit()
-    conn.close()
-
-def simple_inline_format(text):
-    text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
-    text = re.sub(r'`(.+?)`', r'<code>\1</code>', text)
-    text = re.sub(r'\[([^\]]+)\]\((https?://[^)]+|/[^)]+)\)', r'<a href="\2" target="_blank" rel="noopener noreferrer">\1</a>', text)
-    return text
-
-
-def render_writeup_content(markdown_text):
-    if not markdown_text:
-        return '<p>내용이 없습니다.</p>'
-
-    lines = markdown_text.splitlines()
-    html = []
-    i = 0
-
-    while i < len(lines):
-        line = lines[i].strip()
-
-        if not line:
-            i += 1
-            continue
-
-        image_match = re.fullmatch(r'!\[([^\]]*)\]\(([^)]+)\)', line)
-        if image_match:
-            alt = image_match.group(1)
-            src = image_match.group(2)
-            html.append(f'<figure class="writeup-figure"><img src="{src}" alt="{alt}" class="writeup-image"><figcaption>{alt}</figcaption></figure>')
-            i += 1
-            continue
-
-        if line.startswith('### '):
-            html.append(f'<h3>{simple_inline_format(line[4:])}</h3>')
-            i += 1
-            continue
-
-        if line.startswith('## '):
-            html.append(f'<h2>{simple_inline_format(line[3:])}</h2>')
-            i += 1
-            continue
-
-        if line.startswith('# '):
-            html.append(f'<h1>{simple_inline_format(line[2:])}</h1>')
-            i += 1
-            continue
-
-        if line.startswith('- '):
-            items = []
-            while i < len(lines) and lines[i].strip().startswith('- '):
-                items.append(f'<li>{simple_inline_format(lines[i].strip()[2:])}</li>')
-                i += 1
-            html.append('<ul class="writeup-list">' + ''.join(items) + '</ul>')
-            continue
-
-        paragraph_lines = []
-        while i < len(lines):
-            current = lines[i].strip()
-            if not current or current.startswith('#') or current.startswith('- ') or re.fullmatch(r'!\[([^\]]*)\]\(([^)]+)\)', current):
-                break
-            paragraph_lines.append(current)
-            i += 1
-        if paragraph_lines:
-            paragraph = ' '.join(paragraph_lines)
-            html.append(f'<p>{simple_inline_format(paragraph)}</p>')
-            continue
-
-        i += 1
-
-    return '\n'.join(html)
-
+    cur.execute('DELETE FROM writeups')
+    cur.commit()
+    cur.close()
 
 init_db()
 
@@ -163,7 +93,7 @@ def admin_required(f):
             return f(*args, **kwargs)
         if request.path.startswith('/api/'):
             abort(403)
-        return render_template('no-permission.html', alert='Login Required', redirect='/authorize')
+        return render_template('no-permission.html', alert='Login required to access this feature.', redirect='/login')
     return decorated_function
 
 @app.errorhandler(403)
@@ -259,19 +189,19 @@ def stream():
 def about():
     return render_template('about.html')
 
-@app.route('/writeup', methods=['GET'])
-def writeup():
-    conn = get_db_connection()
-    writeups = conn.execute(
+@app.route('/writeups', methods=['GET'])
+def writeups():
+    cur = get_db_connection()
+    writeups = cur.execute(
         'SELECT * FROM writeups ORDER BY created_at DESC'
     ).fetchall()
-    conn.close()
+    cur.close()
     return render_template('writeups.html', writeups=writeups)
 
 
 @app.route('/writeup/<int:writeup_id>', methods=['GET'])
-def writeup_detail(writeup_id):
-    return render_template('writeup_detail.html')
+def writeup(writeup_id):
+    return render_template('writeup.html')
 
 
 @app.route('/writeup/upload', methods=['GET', 'POST'])
@@ -281,25 +211,25 @@ def writeup_upload():
         return jsonify({'status': 'success'})
     return render_template('writeup_upload.html')
 
-@app.route('/authorize', methods=['GET', 'POST'])
-def auth():
+@app.route('/login', methods=['GET', 'POST'])
+def login():
     if request.method == 'POST':
         if not admin_hash:
-            return render_template('auth.html', error='Server configuration error: ADMIN_HASH is missing.')
+            return render_template('login.html', error='Server configuration error: ADMIN_HASH is missing')
 
         pw = request.form.get('password')
         try:
             if ph.verify(admin_hash, pw):
                 session['is_admin'] = True
-                return render_template('auth.html', alert='Login success', redirect=url_for('index'))
+                return render_template('login.html', alert='Login success', redirect=url_for('index'))
         except VerifyMismatchError:
-            return render_template('auth.html', error='Wrong password')
+            return render_template('login.html', error='Wrong password')
         except Exception as e:
-            return render_template('auth.html', error='An error occurred while verifying the password ({e})'.format(e=e))
+            return render_template('login.html', error='An error occurred while verifying the password ({e})'.format(e=e))
     else:
         if session.get('is_admin'):
-            return render_template('auth.html', alert='You already have permission', redirect=url_for('index'))
-        return render_template('auth.html')
+            return render_template('login.html', alert='You already have permission', redirect=url_for('index'))
+        return render_template('login.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port, threaded=True)

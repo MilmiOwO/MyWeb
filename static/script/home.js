@@ -1,4 +1,4 @@
-const textElement = document.getElementById("subtitle");
+const textElement = document.getElementById("greeting-message");
 const words = ["안녕하세요.", "Hello."];
 
 let wordIndex = 0;
